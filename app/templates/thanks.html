@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Thanks For Visiting Us
+{% endblock title %}
+
+{% block content %}
+
+<style>
+  body {
+    opacity: 0;
+    transition: opacity 0.6s ease-in;
+    background-color: #f8f9fc;
+  }
+
+  body.loaded {
+    opacity: 1;
+  }
+
+  .thank-wrapper {
+    max-width: 700px;
+    margin: 60px auto;
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+    text-align: center;
+  }
+
+  .thank-wrapper h4 {
+    font-size: 26px;
+    color: #2c3e50;
+    margin-bottom: 15px;
+  }
+
+  .thank-wrapper p {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 10px;
+  }
+
+  blockquote {
+    font-style: italic;
+    color: #444;
+    background: #f1f1f1;
+    padding: 20px;
+    border-left: 5px solid #007bff;
+    border-radius: 6px;
+    margin: 20px auto;
+    max-width: 500px;
+  }
+
+</style>
+
+<div class="thank-wrapper">
+  <h4>Thank you, {{ name }} 🙏</h4>
+  <p>We received your message:</p>
+  <blockquote>{{ message }}</blockquote>
+</div>
+
+<script>
+  window.addEventListener("load", function () {
+    document.body.classList.add("loaded");
+  });
+</script>
+
+{% endblock content %}

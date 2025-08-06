@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Register
+{% endblock title %}
+
+{% block content %}
+
+<style>
+  body {
+    background: #f2f6fc;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    opacity: 0;
+    transition: opacity 0.7s ease-in;
+  }
+  body.loaded{
+    opacity: 1;
+  }
+
+  .register-container {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 25px 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  }
+
+  .register-container h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 25px;
+  }
+
+  .form-label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #444;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 10px 14px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    transition: border-color 0.3s;
+  }
+
+  .form-control:focus {
+    border-color: #4a90e2;
+    outline: none;
+  }
+
+  .btn-submit {
+    width: 100%;
+    padding: 12px;
+    background-color: #28a745;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .btn-submit:hover {
+    background-color: #218838;
+  }
+
+  .login-link {
+    text-align: center;
+    margin-top: 15px;
+    color: #555;
+  }
+
+  .login-link a {
+    color: #007bff;
+    text-decoration: none;
+  }
+
+  .login-link a:hover {
+    text-decoration: underline;
+  }
+
+  .alert {
+    padding: 12px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+  }
+
+  .alert-success {
+    background-color: #d4edda;
+    color: #155724;
+  }
+
+  .alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
+</style>
+
+<div class="register-container">
+  <h2>Register</h2>
+
+  <!-- Flash messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+          {{ message }}
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form method="post" action="{{url_for('blog.register')}}"> 
+    <label for="username" class="form-label">Username</label>
+    <input type="text" class="form-control" name="username" id="username" required>
+
+    <label for="password" class="form-label">Password</label>
+    <input type="password" class="form-control" id="password" name="password" required>
+
+    <button type="submit" class="btn-submit">Sign Up</button>
+  </form>
+
+  <div class="login-link">
+    <p>Already registered? <a href="{{ url_for('blog.login') }}">Login here</a>.</p>
+  </div>
+</div>
+<script>
+  window.addEventListener("load", function () {
+    document.body.classList.add("loaded");
+  });
+</script>
+
+
+{% endblock content %}
