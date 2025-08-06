@@ -84,17 +84,23 @@
  <div class="grid">
     
     {% for post in posts %}
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title"><i class="bi bi-award-fill"></i>{{ post.title }}</h5>
-                <p class="card-text">{{ post.content }}</p><br>
-                <p class="card-text text-md-end">By :- {{post.author.username}}</p>
-                <a href="{{ url_for('blog.delete', post_id=post.post_id) }}" class="btn btn-info">Delete</a>
-                <a href="{{ url_for('blog.edit', post_id=post.post_id) }}" class="btn btn-info">Edit</a>
+  <div class="card my-3">
+    <div class="card-body">
+      <h5 class="card-title"><i class="bi bi-award-fill"></i>{{ post.title }}</h5>
+      <p class="card-text">{{ post.content }}</p>
+      <p class="text-muted">Author: {{ post.user.username }}</p>
 
-            </div>
-        </div>
-    {% endfor %}
+      {% if current_user.id == post.user_id %}
+        <!-- Only show these buttons to the post's author -->
+        <a href="{{ url_for('blog.edit', post_id=post.post_id) }}" class="btn btn-sm btn-primary">Edit</a>
+        <form action="{{ url_for('blog.delete', post_id=post.post_id) }}" method="POST" style="display:inline;">
+          <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+{% endfor %}
+
  </div>
  <script>
   // Fade-in effect after DOM load
