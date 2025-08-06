@@ -23,8 +23,8 @@ def new_post():
         title = request.form.get('title')
         content = request.form.get('content')
         user_id = current_user.id
-        author = current_user
-        posts = Post(title=title,content=content,user_id=user_id,author=author)
+        
+        posts = Post(title=title,content=content,user_id=user_id,user=current_user)
         db.session.add(posts)
         db.session.commit()
         return redirect(url_for('blog.home'))
