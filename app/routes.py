@@ -36,7 +36,18 @@ def delete(post_id):
     db.session.commit()
     flash("Post deleted successfully!", "success")
     return redirect(url_for('blog.home'))
-    
+
+@blog.route('/edit/<int:post_id>', methods=['GET', 'POST'])
+def edit(post_id):
+    post = Post.query.get_or_404(post_id)
+    if request.method == 'POST':
+        post.title = request.form.get('title')
+        post.content = request.form.get('content')
+        db.session.commit()
+        return redirect(url_for('blog.home'))
+    return render_template('edit.html', post=post)
+
+
 @blog.route('/projects')
 @login_required
 def projects():
