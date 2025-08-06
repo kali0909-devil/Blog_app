@@ -22,7 +22,9 @@ def new_post():
     if request.method == 'POST':
         title = request.form.get('title')
         content = request.form.get('content')
-        posts = Post(title=title,content=content)
+        user_id = current_user.id
+        author = current_user
+        posts = Post(title=title,content=content,user_id=user_id,author=author)
         db.session.add(posts)
         db.session.commit()
         return redirect(url_for('blog.home'))
@@ -32,6 +34,11 @@ def new_post():
 @login_required
 def delete(post_id):
     posts = Post.query.filter_by(post_id=post_id).first()
+    if posts.user_id != current_user.id:
+        author = User.query.get_or_404(posts.user_id)
+        flash(f"This post belongs to {author.username}, You cannot delete this.", "danger")
+        return redirect(url_for('blog.home'))
+
     db.session.delete(posts)
     db.session.commit()
     flash("Post deleted successfully!", "success")
@@ -40,6 +47,11 @@ def delete(post_id):
 @blog.route('/edit/<int:post_id>', methods=['GET', 'POST'])
 def edit(post_id):
     post = Post.query.get_or_404(post_id)
+    if post.user_id != current_user.id:
+       author = User.query.get_or_404(post.user_id)
+       flash(f"This post belongs to {author.username}, You cannot edit this.", "danger")
+       return redirect(url_for('blog.home'))
+     
     if request.method == 'POST':
         post.title = request.form.get('title')
         post.content = request.form.get('content')

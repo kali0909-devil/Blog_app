@@ -13,7 +13,7 @@
   }
     .add-post {
         text-align: center;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
     }
 
     .grid {
@@ -36,7 +36,7 @@
     }
 
     .card-body {
-        padding: 20px;
+        padding: 15px;
     }
 
     .card-title {
@@ -49,7 +49,7 @@
     .card-text {
         font-size: 16px;
         color: #666;
-        margin-bottom: 15px;
+        margin-bottom: 10px;
     }
 
     .btn-info, .btn-success {
@@ -65,18 +65,30 @@
         background-color: #0056b3;
     }
  </style>
-
+{% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+           
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
  <div class="add-post">
     <a href="{{ url_for('blog.new_post') }}" class="btn btn-success">+ Add Post</a>
  </div>
 
  <h2 style="text-align:center;">📝 Blog Posts</h2>
+ 
  <div class="grid">
+    
     {% for post in posts %}
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title">{{ post.title }}</h5>
-                <p class="card-text">{{ post.content }}</p>
+                <h5 class="card-title"><i class="bi bi-award-fill"></i>{{ post.title }}</h5>
+                <p class="card-text">{{ post.content }}</p><br>
+                <p class="card-text text-md-end">By :- {{post.author.username}}</p>
                 <a href="{{ url_for('blog.delete', post_id=post.post_id) }}" class="btn btn-info">Delete</a>
                 <a href="{{ url_for('blog.edit', post_id=post.post_id) }}" class="btn btn-info">Edit</a>
 
