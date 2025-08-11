@@ -1,19 +1,14 @@
-{% extends 'index.html' %}
-
-{% block title %}
-    Register
-{% endblock title %}
-
-{% block content %}
+{% extends 'index.html' %} {% block title %} Register {% endblock title %} {%
+block content %}
 
 <style>
   body {
     background: #f2f6fc;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     opacity: 0;
     transition: opacity 0.7s ease-in;
   }
-  body.loaded{
+  body.loaded {
     opacity: 1;
   }
 
@@ -104,28 +99,46 @@
   <h2>Register</h2>
 
   <!-- Flash messages -->
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      {% for category, message in messages %}
-        <div class="alert alert-{{ category }}">
-          {{ message }}
+  {% include 'flash.html' %}
+  <div class="card mx-auto" style="max-width: 420px">
+    <div class="card-body">
+      <form method="POST">
+        {{ form.hidden_tag() }} {# CSRF token + other hidden fields #}
+
+        <div class="mb-3">
+          {{ form.username.label(class="form-label") }} {{
+          form.username(class="form-control") }} {% if form.username.errors %}
+          <div class="alert-danger small">
+            {% for err in form.username.errors %} {{ err }} {% endfor %}
+          </div>
+          {% endif %}
         </div>
-      {% endfor %}
-    {% endif %}
-  {% endwith %}
 
-  <form method="post" action="{{url_for('blog.register')}}"> 
-    <label for="username" class="form-label">Username</label>
-    <input type="text" class="form-control" name="username" id="username" required>
+        <div class="mb-3">
+          {{ form.password.label(class="form-label") }} {{
+          form.password(class="form-control") }} {% for err in
+          form.password.errors %}
+          <div class="alert-danger small">{{ err }}</div>
+          {% endfor %}
+        </div>
 
-    <label for="password" class="form-label">Password</label>
-    <input type="password" class="form-control" id="password" name="password" required>
+        <div class="mb-3">
+          {{ form.confirm_password.label(class="form-label") }} {{
+          form.confirm_password(class="form-control") }} {% for err in
+          form.confirm_password.errors %}
+          <div class="alert-danger small">{{ err }}</div>
+          {% endfor %}
+        </div>
 
-    <button type="submit" class="btn-submit">Sign Up</button>
-  </form>
-
-  <div class="login-link">
-    <p>Already registered? <a href="{{ url_for('blog.login') }}">Login here</a>.</p>
+        {{ form.submit(class="btn btn-primary w-100") }}
+        <div class="login-link">
+          <p>
+            Already registered?
+            <a href="{{ url_for('blog.login') }}">Login here</a>.
+          </p>
+        </div>
+      </form>
+    </div>
   </div>
 </div>
 <script>

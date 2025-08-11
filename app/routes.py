@@ -3,6 +3,7 @@ from flask import render_template,request,redirect,url_for,Blueprint,flash # typ
 from flask_login import login_user,login_required,logout_user,current_user # type: ignore
 from . import bcrypt,db,login_manager
 from .models import User,Post
+from .forms import RegisterForm,LoginForm
 
 
 blog = Blueprint('blog',__name__)
@@ -81,22 +82,24 @@ def contact():
 
 @blog.route('/register',methods = ['GET','POST'])
 def register():
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = bcrypt.generate_password_hash(request.form.get('password')).decode('utf-8')
+    form = RegisterForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user = User(username = username , password = password)
         db.session.add(user)
         db.session.commit()
         flash('Account Registred Successfully, Confirmation Email sent!','success')
         return redirect(url_for('blog.login'))
     
-    return render_template('register.html')
+    return render_template('register.html',form=form)
 
 @blog.route('/login',methods = ['GET','POST'])
 def login():
-    if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
+    form = LoginForm()
+    if form.validate_on_submit():
+        username = form.username.data
+        password = form.password.data
         user = User.query.filter_by(username=username).first()
         if user and bcrypt.check_password_hash(user.password,password):
             login_user(user)
@@ -105,7 +108,7 @@ def login():
         else:
             flash('Invalid username or password','danger')
             return redirect(url_for('blog.login'))
-    return render_template('login.html')
+    return render_template('login.html',form=form)
     
 
 @blog.route('/logout')
