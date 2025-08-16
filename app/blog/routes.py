@@ -1,14 +1,9 @@
 
-from flask import render_template,request,redirect,url_for,Blueprint,flash # type: ignore
-from flask_login import login_user,login_required,logout_user,current_user # type: ignore
-from . import bcrypt,db,login_manager
-from .models import User,Post
-from .forms import RegisterForm,LoginForm
-
-
-blog = Blueprint('blog',__name__)
-
-
+from flask import Blueprint, render_template, request, redirect, url_for, flash # type: ignore
+from flask_login import login_required, current_user # type: ignore
+from ..models import Post, User
+from .. import db
+from . import blog_bp as blog
 
 @blog.route('/')
 @login_required
@@ -80,44 +75,4 @@ def contact():
         return render_template('thanks.html',name=name,message=message)
     return render_template('contact.html')
 
-@blog.route('/register',methods = ['GET','POST'])
-def register():
-    form = RegisterForm()
-    if form.validate_on_submit():
-        username = form.username.data
-        password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(username = username , password = password)
-        db.session.add(user)
-        db.session.commit()
-        flash('Account Registred Successfully, Confirmation Email sent!','success')
-        return redirect(url_for('blog.login'))
-    
-    return render_template('register.html',form=form)
 
-@blog.route('/login',methods = ['GET','POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        username = form.username.data
-        password = form.password.data
-        user = User.query.filter_by(username=username).first()
-        if user and bcrypt.check_password_hash(user.password,password):
-            login_user(user)
-            flash('Welcome!')
-            return redirect(url_for('blog.home'))
-        else:
-            flash('Invalid username or password','danger')
-            return redirect(url_for('blog.login'))
-    return render_template('login.html',form=form)
-    
-
-@blog.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    flash('logout successfully','info')
-    return redirect(url_for('blog.login'))
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))

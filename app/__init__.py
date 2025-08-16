@@ -1,26 +1,27 @@
 from flask import Flask # type: ignore
-from flask_login import LoginManager # type: ignore
-from flask_sqlalchemy import SQLAlchemy # type: ignore
-from flask_bcrypt import Bcrypt # type: ignore
+from .extentions import db, login_manager, bcrypt, mail
+from .config import Config
+from .blog import blog_bp
+from .auth import auth_bp
 
-db = SQLAlchemy()
-bcrypt = Bcrypt()
-login_manager = LoginManager()
 
-def create_app():
+
+def create_app(config_class=Config):
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'ajinkya123'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+    app.config.from_object(config_class)
     db.init_app(app)
     bcrypt.init_app(app)
+    mail.init_app(app)
+    app.register_blueprint(blog_bp)
+    app.register_blueprint(auth_bp, url_prefix='/auth')
     login_manager.init_app(app)
-    login_manager.login_view = 'blog.login'
+    login_manager.login_view = 'auth.login'
+    login_manager.login_message = 'Please log in to access this page.'
+    login_manager.login_message_category = 'info'
     
-
-    from .routes import blog
+    from .models import load_user
     
-    app.register_blueprint(blog)
-
+   
     
 
 
