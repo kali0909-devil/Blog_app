@@ -1,11 +1,14 @@
 from flask import render_template, redirect, url_for, flash # type: ignore
 from flask_login import login_user, login_required, logout_user, current_user # type: ignore
 from . import auth_bp as auth
-from ..extentions import bcrypt, db, mail
+from ..extentions import bcrypt, db, mail, google_bp
 from ..models import load_user
 from ..models import User
 from .forms import RegisterForm, LoginForm, ForgotPasswordForm, ResetPasswordForm, generate_reset_token, verify_reset_token
 from flask_mail import Message # type: ignore
+from flask_dance.contrib.google import google # type: ignore
+import secrets
+
 
 
 @auth.route('/register',methods = ['GET','POST'])
@@ -84,6 +87,29 @@ def reset_password(token):
         return redirect(url_for('auth.login'))
     return render_template('reset_password.html', form=form)
     
+@auth.route('/google_login')
+def google_login():
+    if not google.authorized:
+        return redirect(url_for('google.login'))
+    resp = google.get('/oauth2/v2/userinfo')
+    if resp.ok:
+        user_info = resp.json()
+        print("Google response JSON:", user_info)
+        email = user_info['email']
+        username = user_info['name']
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            user = User(username=username,email=email,password=secrets.token_hex(16))  # Generate a random password
+            db.session.add(user)
+            db.session.commit()
+        login_user(user)
+        flash('Logged in successfully with Google!', 'success')
+        return redirect(url_for('blog.home'))
+    else:
+        flash('Failed to fetch user information from Google.', 'danger')
+        return redirect(url_for('auth.login'))
+    
+ 
 
 @auth.route('/logout')
 @login_required
@@ -91,3 +117,6 @@ def logout():
     logout_user()
     flash('logout successfully','info')
     return redirect(url_for('auth.login'))
+
+
+

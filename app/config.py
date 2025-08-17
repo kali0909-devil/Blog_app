@@ -23,4 +23,4 @@ class Config:
     GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID")
     GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
     OAUTHLIB_RELAX_TOKEN_SCOPE = True
-    OAUTHLIB_INSECURE_TRANSPORT = True  # Disable in production!
+    OAUTHLIB_INSECURE_TRANSPORT = True # Disable in production!

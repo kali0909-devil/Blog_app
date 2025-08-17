@@ -1,5 +1,5 @@
 from flask import Flask # type: ignore
-from .extentions import db, login_manager, bcrypt, mail
+from .extentions import db, login_manager, bcrypt, mail, csrf, google_bp
 from .config import Config
 from .blog import blog_bp
 from .auth import auth_bp
@@ -14,6 +14,7 @@ def create_app(config_class=Config):
     mail.init_app(app)
     app.register_blueprint(blog_bp)
     app.register_blueprint(auth_bp, url_prefix='/auth')
+    app.register_blueprint(google_bp, url_prefix='/auth/google_login')
     login_manager.init_app(app)
     login_manager.login_view = 'auth.login'
     login_manager.login_message = 'Please log in to access this page.'

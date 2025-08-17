@@ -98,6 +98,14 @@ content %}
           </div>
 
         {{ form.submit(class="btn btn-primary w-100") }}
+        <div class="text-center mt-3">
+          <p>or</p>
+        <div class="text-muted text-center mt-3">
+          <p>
+          sign in with
+          <a href="{{ url_for('google.login') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-google"></i> Google</a>
+          </p>
         <div class="register-link mt-3">
           <p>
             Create a new account
