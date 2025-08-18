@@ -93,6 +93,12 @@
     <label class="form-label">Content</label>
     <textarea name="content" class="form-control" rows="6" required>{{post.content}}</textarea>
 
+     <label class="form-label">Image URL</label>
+    <input type="url" name="image_url" class="form-control" value="{{post.image}}">
+
+     <label class="form-label">Reference URL</label>
+    <input type="url" name="reference_url" class="form-control" value="{{post.reference}}">
+
     <button type="submit" class="btn btn-primary">Update</button>
     <a href="{{ url_for('blog.home') }}" class="btn btn-secondary">Cancel</a>
   </form>

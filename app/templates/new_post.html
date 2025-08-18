@@ -1,5 +1,6 @@
-{% extends 'index.html' %} {% block title %} New Post {% endblock title %} {%
-block content %}
+{% extends 'index.html' %}
+{% block title %} New Post {% endblock title %}
+{% block content %}
 
 <style>
   body {
@@ -87,6 +88,13 @@ block content %}
 
     <label class="form-label">Content</label>
     <textarea name="content" class="form-control" rows="6" required></textarea>
+
+    <!-- New field for Image URL -->
+    <label class="form-label">Image URL</label>
+    <input type="url" name="image_url" class="form-control" placeholder="https://example.com/image.jpg" />
+
+    <label class="form-label">Reference URL</label>
+    <input type="url" name="reference_url" class="form-control" placeholder="https://example.com/" />
 
     <button type="submit" class="btn btn-primary">Post</button>
     <a href="{{ url_for('blog.home') }}" class="btn btn-secondary">Cancel</a>

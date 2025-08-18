@@ -11,20 +11,43 @@ def home():
     posts = Post.query.all()
     return render_template('blog.html',posts=posts)
 
-
-@blog.route('/new',methods = ['GET','POST'])
+@blog.route('/dashboard')
+@login_required
+def dashboard():
+   user = current_user
+   username = user.username
+   email = user.email
+   post_count = Post.query.filter_by(user_id=current_user.id).count()
+   user_posts = Post.query.filter_by(user_id=current_user.id).all()
+   return render_template('dashboard.html', posts=user_posts,username=username, email=email, post_count=post_count)
+        
+@blog.route('/new', methods=['GET', 'POST'])
 @login_required
 def new_post():
     if request.method == 'POST':
         title = request.form.get('title')
         content = request.form.get('content')
-        user_id = current_user.id
-        
-        posts = Post(title=title,content=content,user_id=user_id,user=current_user)
-        db.session.add(posts)
+        image_url = request.form.get('image_url')  # image field from form
+        reference_url = request.form.get('reference_url')  # reference field from form
+
+        # Create a new post instance
+        new_post = Post(
+            title=title,
+            content=content,
+            user_id=current_user.id,
+            image=image_url if image_url else None,
+            reference=reference_url if reference_url else None
+        )
+        db.session.add(new_post)
         db.session.commit()
         return redirect(url_for('blog.home'))
     return render_template('new_post.html')
+
+@blog.route("/post/<int:post_id>")
+def post_detail(post_id):
+    post = Post.query.get_or_404(post_id)
+    author = User.query.get_or_404(post.user_id)
+    return render_template("post.html", post=post,author=author.username)
 
 @blog.route('/delete/<int:post_id>', methods=['POST', 'GET'])
 @login_required
@@ -34,7 +57,6 @@ def delete(post_id):
         author = User.query.get_or_404(posts.user_id)
         flash(f"This post belongs to {author.username}, You cannot delete this.", "danger")
         return redirect(url_for('blog.home'))
-
     db.session.delete(posts)
     db.session.commit()
     flash("Post deleted successfully!", "success")
@@ -47,10 +69,12 @@ def edit(post_id):
        author = User.query.get_or_404(post.user_id)
        flash(f"This post belongs to {author.username}, You cannot edit this.", "danger")
        return redirect(url_for('blog.home'))
-     
+
     if request.method == 'POST':
         post.title = request.form.get('title')
         post.content = request.form.get('content')
+        post.image = request.form.get('image_url')  # image field from form
+        post.reference = request.form.get('reference_url')  # reference field from form
         db.session.commit()
         return redirect(url_for('blog.home'))
     return render_template('edit.html', post=post)
