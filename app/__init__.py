@@ -3,6 +3,8 @@ from .extentions import db, login_manager, bcrypt, mail, csrf, google_bp
 from .config import Config
 from .blog import blog_bp
 from .auth import auth_bp
+from flask_migrate import Migrate
+
 
 
 
@@ -19,11 +21,7 @@ def create_app(config_class=Config):
     login_manager.login_view = 'auth.login'
     login_manager.login_message = 'Please log in to access this page.'
     login_manager.login_message_category = 'info'
-    
+    Migrate(app, db)
     from .models import load_user
-    
-   
-    
-
 
     return app

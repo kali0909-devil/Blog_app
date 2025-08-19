@@ -6,6 +6,7 @@ from flask_wtf import CSRFProtect # type: ignore
 from flask_dance.contrib.google import make_google_blueprint# type: ignore
 from .config import Config
 
+
 db = SQLAlchemy()
 login_manager = LoginManager()
 bcrypt = Bcrypt()
