@@ -3,7 +3,7 @@ from flask_bcrypt import Bcrypt # type: ignore
 from flask_login import LoginManager # type: ignore
 from flask_mail import Mail # type: ignore
 from flask_wtf import CSRFProtect # type: ignore
-from flask_dance.contrib.google import make_google_blueprint# type: ignore
+from flask_dance.contrib.google import make_google_blueprint # type: ignore
 from .config import Config
 
 

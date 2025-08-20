@@ -1,8 +1,6 @@
 {% extends 'index.html' %}
 
-{% block title %}
-    New Post
-{% endblock title %}
+{% block title %} New Post {% endblock title %}
 
 {% block content %}
 
@@ -85,21 +83,27 @@
 </style>
 
 <div class="form-wrapper">
-  <h2>Edit Post📝</h2>
-  <form method="post">
-    <label class="form-label">Title</label>
-    <input type="text" name="title" class="form-control" required value="{{post.title}}">
+  <h2>Create New Post 📝</h2>
+  <form method="POST" enctype="multipart/form-data">
+    <!-- CSRF token -->
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-    <label class="form-label">Content</label>
-    <textarea name="content" class="form-control" rows="6" required>{{post.content}}</textarea>
+    <label class="form-label" for="title">Title</label>
+    <input type="text" name="title" id="title" class="form-control" placeholder="Post title" required>
 
-     <label class="form-label">Image URL</label>
-    <input type="url" name="image_url" class="form-control" value="{{post.image}}">
+    <label class="form-label" for="content">Content</label>
+    <textarea name="content" id="content" class="form-control" rows="6" placeholder="Write your post here..." required></textarea>
 
-     <label class="form-label">Reference URL</label>
-    <input type="url" name="reference_url" class="form-control" value="{{post.reference}}">
+    <label class="form-label" for="image_url">Image URL</label>
+    <input type="url" name="image_url" id="image_url" class="form-control" placeholder="https://example.com/image.jpg">
 
-    <button type="submit" class="btn btn-primary">Update</button>
+    <label class="form-label" for="select_img">Or Upload Image</label>
+    <input type="file" name="select_img" id="select_img" class="form-control" accept="image/*">
+
+    <label class="form-label" for="reference_url">Reference URL</label>
+    <input type="url" name="reference_url" id="reference_url" class="form-control" placeholder="https://example.com/">
+
+    <button type="submit" class="btn btn-primary">Post</button>
     <a href="{{ url_for('blog.home') }}" class="btn btn-secondary">Cancel</a>
   </form>
 </div>

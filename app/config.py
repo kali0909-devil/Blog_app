@@ -24,3 +24,6 @@ class Config:
     GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET")
     OAUTHLIB_RELAX_TOKEN_SCOPE = True
     OAUTHLIB_INSECURE_TRANSPORT = True # Disable in production!
+
+    # Upload folder
+    UPLOAD_FOLDER = os.environ.get("UPLOAD_FOLDER", "static/uploads")

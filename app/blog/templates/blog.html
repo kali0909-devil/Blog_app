@@ -1,0 +1,114 @@
+{% extends "index.html" %}
+{% block title %} Blog {% endblock title %}
+{% block content %}
+
+<style>
+  body {
+    opacity: 0;
+    transition: opacity 0.7s ease-in;
+  }
+  body.loaded {
+    opacity: 1;
+  }
+
+  h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 700;
+    color: #333;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+  }
+
+  .card {
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    background: #ffffff;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+  }
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  }
+
+  .post-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    background-color: #f9f9f9;
+  }
+
+  .card-body {
+    padding: 18px;
+  }
+  .card-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  .card-author {
+    font-size: 14px;
+    color: #666;
+    text-align: center;
+    margin: 0;
+  }
+</style>
+
+<!-- Flash messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<h2>📝 Blog Posts</h2>
+
+<div class="grid">
+  {% for post in posts %}
+    <a href="{{ url_for('blog.post_detail', post_id=post.post_id) }}" class="card">
+      
+      {% if post.select_img %}
+        <!-- Uploaded image from /static/uploads -->
+        <img src="{{ url_for('static', filename='uploads/' ~ post.select_img) }}" alt="{{ post.title }}" class="post-image">
+      {% elif post.image %}
+        <!-- User-provided external image URL -->
+        <img src="{{ post.image }}" alt="{{ post.title }}" class="post-image">
+      {% else %}
+        <!-- Fallback default image -->
+        <img src="{{ url_for('static', filename='images/default.png') }}" alt="Default Image" class="post-image">
+      {% endif %}
+
+      <div class="card-body">
+        <h5 class="card-title">
+          <i class="bi bi-award-fill text-primary"></i> {{ post.title }}
+        </h5>
+        <p class="card-author">
+          <i class="bi bi-person-circle"></i> By {{ post.user.username }}
+        </p>
+      </div>
+    </a>
+  {% endfor %}
+</div>
+
+<script>
+  window.addEventListener("load", function () {
+    document.body.classList.add("loaded");
+  });
+</script>
+
+{% endblock %}

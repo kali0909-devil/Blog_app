@@ -1,5 +1,9 @@
 {% extends 'index.html' %}
-{% block title %} New Post {% endblock title %}
+
+{% block title %}
+    Edit Post
+{% endblock title %}
+
 {% block content %}
 
 <style>
@@ -81,24 +85,29 @@
 </style>
 
 <div class="form-wrapper">
-  <h2>Create New Post 📝</h2>
-  <form method="post">
-    <label class="form-label">Title</label>
-    <input type="text" name="title" class="form-control" required />
+  <h2>Edit Post 📝</h2>
+  <form method="POST" enctype="multipart/form-data">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-    <label class="form-label">Content</label>
-    <textarea name="content" class="form-control" rows="6" required></textarea>
+  <label>Title</label>
+  <input type="text" name="title" class="form-control" value="{{ post.title }}" required>
 
-    <!-- New field for Image URL -->
-    <label class="form-label">Image URL</label>
-    <input type="url" name="image_url" class="form-control" placeholder="https://example.com/image.jpg" />
+  <label>Content</label>
+  <textarea name="content" class="form-control" rows="6" required>{{ post.content }}</textarea>
 
-    <label class="form-label">Reference URL</label>
-    <input type="url" name="reference_url" class="form-control" placeholder="https://example.com/" />
+  <label>Image URL</label>
+  <input type="text" name="image_url" class="form-control" value="{{ post.image }}">
 
-    <button type="submit" class="btn btn-primary">Post</button>
-    <a href="{{ url_for('blog.home') }}" class="btn btn-secondary">Cancel</a>
-  </form>
+  <label>Or Upload Image</label>
+  <input type="file" name="select_img" class="form-control">
+
+  <label>Reference URL</label>
+  <input type="text" name="reference_url" class="form-control" value="{{ post.reference }}">
+
+  <button type="submit" class="btn btn-primary">Update</button>
+  <a href="{{ url_for('blog.post_detail', post_id=post.post_id) }}" class="btn btn-secondary">Cancel</a>
+</form>
+
 </div>
 
 <script>
